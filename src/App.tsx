@@ -28,6 +28,7 @@ import GovernorInvestorsPage from './pages/governor/InvestorsPage';
 import GovernorWithdrawalsPage from './pages/governor/WithdrawalsPage';
 import GovernorInvestorProfile from './pages/governor/InvestorProfile';
 import GovernorMessagesPage from './pages/governor/MessagesPage';
+import AccountCreationRequests from './pages/governor/AccountCreationRequests';
 import GovernorSecurityPage from './pages/governor/SecurityPage';
 import GovernorLogsPage from './pages/governor/LogsPage';
 import GovernorConfigPage from './pages/governor/ConfigPage';
@@ -274,6 +275,12 @@ function App() {
           <Route path="/governor/messages" element={
             <ProtectedRoute role="governor">
               <GovernorEnhancedMessagesPage />
+            </ProtectedRoute>
+          } />
+        
+          <Route path="/governor/account-requests" element={
+            <ProtectedRoute role="governor">
+              <AccountCreationRequests />
             </ProtectedRoute>
           } />
         

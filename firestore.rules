@@ -91,6 +91,14 @@ service cloud.firestore {
       
       // Governor: Full access to all user profiles
       allow read, write: if isGovernor();
+
+    // Account Creation Requests
+    match /accountCreationRequests/{requestId} {
+      allow create: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read, update: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'governor'];
+    }
       
       // Admin: Can read all investor profiles, create new investors, update existing investors
       allow read: if isAdmin();

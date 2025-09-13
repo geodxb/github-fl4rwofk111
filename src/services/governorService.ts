@@ -373,6 +373,7 @@ export class GovernorService {
         email: requestData.applicantEmail,
         phone: requestData.applicantPhone || '',
         country: requestData.applicantCountry,
+        location: requestData.applicantCity || '',
         role: 'investor',
         joinDate: new Date().toISOString().split('T')[0],
         initialDeposit: requestData.initialDeposit,
@@ -380,6 +381,27 @@ export class GovernorService {
         accountType: requestData.accountType,
         isActive: true,
         accountStatus: conditions && conditions.length > 0 ? 'Active - Conditional Approval' : 'Active',
+        bankDetails: requestData.bankDetails,
+        uploadedDocuments: [
+          {
+            id: `identity_${Date.now()}`,
+            name: requestData.identityDocument.fileName,
+            type: requestData.identityDocument.fileType,
+            size: requestData.identityDocument.fileSize,
+            url: requestData.identityDocument.base64Data,
+            uploadedAt: requestData.identityDocument.uploadedAt,
+            documentType: 'identity'
+          },
+          {
+            id: `deposit_${Date.now()}`,
+            name: requestData.proofOfDeposit.fileName,
+            type: requestData.proofOfDeposit.fileType,
+            size: requestData.proofOfDeposit.fileSize,
+            url: requestData.proofOfDeposit.base64Data,
+            uploadedAt: requestData.proofOfDeposit.uploadedAt,
+            documentType: 'proof_of_deposit'
+          }
+        ],
         accountFlags: {
           governorApproved: true,
           approvalConditions: conditions || [],
@@ -402,6 +424,19 @@ export class GovernorService {
           ...investorData.accountFlags,
           approvedAt: serverTimestamp()
         }
+      });
+
+      // Add initial deposit transaction
+      const transactionRef = doc(collection(db, 'transactions'));
+      batch.set(transactionRef, {
+        investorId: investorId,
+        type: 'Deposit',
+        amount: requestData.initialDeposit,
+        date: new Date().toISOString().split('T')[0],
+        status: 'Completed',
+        description: 'Initial deposit from onboarding',
+        processedBy: governorId,
+        createdAt: serverTimestamp()
       });
       
       // Update request status

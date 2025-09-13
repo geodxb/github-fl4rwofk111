@@ -150,3 +150,59 @@ export interface SystemSettings {
   updatedAt: Date;
   updatedBy: string;
 }
+
+export interface AccountCreationRequest {
+  id: string;
+  applicantName: string;
+  applicantEmail: string;
+  applicantPhone?: string;
+  applicantCountry: string;
+  applicantCity: string;
+  requestedBy: string;
+  requestedByName: string;
+  requestedAt: Date;
+  status: 'pending' | 'approved' | 'rejected';
+  initialDeposit: number;
+  accountType: 'Standard' | 'Pro';
+  bankDetails: {
+    bankName: string;
+    accountHolderName: string;
+    accountNumber?: string;
+    iban?: string;
+    swiftCode?: string;
+    bic?: string;
+    cbu?: string;
+    alias?: string;
+    clabe?: string;
+    emiratesId?: string;
+    phoneNumber?: string;
+    address?: string;
+    bankBranch?: string;
+    currency: string;
+    country: string;
+  };
+  identityDocument: {
+    type: 'id_card' | 'passport';
+    fileName: string;
+    fileType: string;
+    fileSize: number;
+    base64Data: string;
+    uploadedAt: Date;
+  };
+  proofOfDeposit: {
+    fileName: string;
+    fileType: string;
+    fileSize: number;
+    base64Data: string;
+    uploadedAt: Date;
+  };
+  agreementAccepted: boolean;
+  agreementAcceptedAt: Date;
+  reviewNotes?: string;
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  rejectionReason?: string;
+  approvalConditions?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}

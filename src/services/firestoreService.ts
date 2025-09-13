@@ -880,7 +880,7 @@ export class FirestoreService {
           id: doc.id,
           ...data,
           requestedAt: data.requestedAt?.toDate() || new Date(),
-          submittedAt: data.submittedAt?.toDate() || new Date(),
+          agreementAcceptedAt: data.agreementAcceptedAt?.toDate() || new Date(),
           reviewedAt: data.reviewedAt?.toDate() || null,
           createdAt: data.createdAt?.toDate() || new Date()
         };
@@ -891,6 +891,25 @@ export class FirestoreService {
     } catch (error) {
       console.error('❌ Firebase Error: Failed to fetch account creation requests:', error);
       throw new Error(`Failed to load account creation requests: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Add account creation request
+  static async addAccountCreationRequest(request: Omit<AccountCreationRequest, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    try {
+      console.log('🔥 Firebase: Adding account creation request for:', request.applicantName);
+      const docRef = await addDoc(collection(db, 'accountCreationRequests'), {
+        ...request,
+        requestedAt: serverTimestamp(),
+        agreementAcceptedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      console.log('✅ Firebase: Account creation request added successfully:', docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error('❌ Firebase Error: Failed to add account creation request:', error);
+      throw new Error(`Failed to add account creation request: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
